@@ -1,0 +1,46 @@
+//THE VARIABLES BELOW ARE USED IN THE FINAL FUNCTION CALL IN PLACE OF MANUAL ARGUMENT CHNGE
+//CHANGE THESE VARIABLES INSTEAD OF THE FINAL CALL'S ARGUMNTS
+//        |
+//        |
+//        V
+
+int $stepNum        = 20;
+float $stairLength  = 2.0;
+float $stairWidth   = 0.5;
+float $stairHeight  = 0.3;
+float $stairPivot[] = {0, 0, 1}; // Pivot offset relative to the step
+float $stepHeight   = 0.3;
+float $stepRot      = 20.0;
+
+proc spiralStaircaseGenerator(int $stepNum, float $stairLength, float $stairWidth, float $stairHeight, float $stairPivot[], float $stepHeight, float $stepRot) {
+    int $i;
+
+    for (/*initialize*/ $i = 0;
+         /*condition*/ $i < $stepNum; 
+         /*iteration*/ $i++) {
+        
+        //this array stores the name of the most recently created step
+        //allowing easy iterated modification
+        string $step[] = `polyCube -w $stairWidth -h $stairHeight -d $stairLength -ax 0 1 0 -ch 1`;
+        
+        //move the centroid to pivot the staircase around an offset !!normally when you move the pivot, MEL refers to 
+        //                                                          !!"polyCubeX.scalePivot" and by using our string array 
+        //                                                          !!we can move it for each iteration (same with .rotatePivot)
+        move -r ($stairPivot[0]) ($stairPivot[1]) ($stairPivot[2]) ($step[0] + ".scalePivot") ($step[0] + ".rotatePivot");
+        
+        //creates a new angle based on the current iteration
+        //multiplied by the stepRot variable
+        float $rotationAngle = $i * $stepRot;
+
+        //new Y value to move the step up each iteration
+        float $stepPosX = 0;
+        float $stepPosY = $i * $stepHeight;
+        float $stepPosZ = 0;
+        
+        //move and rotate using the newly iterated values
+        move $stepPosX $stepPosY $stepPosZ $step[0];
+        rotate 0 $rotationAngle 0 $step[0];
+    }
+}
+
+spiralStaircaseGenerator($stepNum, $stairLength, $stairWidth, $stairHeight, $stairPivot, $stepHeight, $stepRot);
