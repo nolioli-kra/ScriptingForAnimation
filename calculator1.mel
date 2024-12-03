@@ -1,0 +1,101 @@
+float $nums[] = {2, 4, 5};
+
+//ADDITION
+proc float additionFunc(float $numbers[]){
+    float $sum = 0.0;
+    int $i;
+    for ($i = 0; $i < size($numbers); $i++){
+        $sum += $numbers[$i];
+    }
+    return $sum;
+}
+float $sumAm = `additionFunc $nums`;
+print ("The total is: " + $sumAm + "\n");
+
+//SUBTRACTION
+proc float subtractionFunc(float $numbers[]){
+    float $diff = $numbers[0];
+    int $i;
+    //   initialize on the second iteration to prevent 
+    //   the first iteration subtracting iteslf
+    //        |
+    //        V
+    for ($i = 1; $i < size($numbers); $i++){
+        $diff -= $numbers[$i];
+    }
+    return $diff;
+}
+float $diffAm = `subtractionFunc $nums`;
+print ("The total is: " + $diffAm + "\n");
+
+//MULTIPLICATION
+proc float multiplyFunc(float $numbers[]){
+    float $mTotal = 1.0;
+    int $i;
+    for ($i = 0; $i < size($numbers); $i++){
+        $mTotal *= $numbers[$i];
+    }
+    return $mTotal;
+}
+float $mTotalAm = `multiplyFunc $nums`;
+print ("The total is: " + $mTotalAm + "\n");
+
+//DIVISION
+proc float divideFunc(float $numbers[]){
+    float $dTotal = $numbers[0];
+    int $i;
+    //   initialize on the second iteration to prevent 
+    //   the first iteration dividing by iteslfd
+    //        |
+    //        V
+    for ($i = 1; $i < size($numbers); $i++){
+        $dTotal /= $numbers[$i];
+    }
+    return $dTotal;
+}
+float $dTotalAm = `divideFunc $nums`;
+print ("The total is: " + $dTotalAm + "\n");
+
+//EXPONENT
+proc float exponentFunc(float $numbers[]){
+    float $base = $numbers[0];
+    float $powerN = $numbers[1];
+    float $exTotal = `pow $base $powerN`;
+    return $exTotal;
+}
+float $exTotalAm = `exponentFunc $nums`;
+print ("The total is: " + $exTotalAm + "\n");
+
+//MEAN
+proc float averageFunc(float $numbers[]){
+    float $meanSum = 0.0;
+    int $sourceSize = size($numbers);
+    int $i;
+    for ($i = 0; $i < size($numbers); $i++){
+        $meanSum += $numbers[$i];
+    }
+    float $mean = ($meanSum / $sourceSize);
+    return $mean;
+}
+float $meanAm = `averageFunc $nums`;
+print ("The average is: " + $meanAm + "\n");
+
+// MEDIAN
+proc float medianFunc(float $numbers[]) {
+    int $size = size($numbers);
+
+    float $sorted[] = sort($numbers);
+
+    // the % finds the remainder of the size, if there is a 1 left over then the size is odd
+    // and no additional calc is required
+    if ($size % 2 == 1) {
+        //              int converts the decimal result to the middle value
+        return $sorted[(int)($size / 2)];
+    } else {
+        //even number of elements: average the two middle elements
+        int $midIndex = $size / 2;
+        return ($sorted[$midIndex - 1] + $sorted[$midIndex]) / 2;
+    }
+}
+float $median = `medianFunc $nums`;
+print ("The median value is: " + $median + "\n");
