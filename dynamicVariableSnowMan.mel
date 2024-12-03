@@ -1,34 +1,34 @@
 
 proc snowManCreate(int $newScale){
-//base
+    //base
     polySphere -r $newScale -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
-move -r 0 $newScale 0 ;
-//middle
+    move -r 0 $newScale 0 ;
+    //middle
     polySphere -r ($newScale * 0.6) -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
-move -r 0 (($newScale * 0.6) + ($newScale * 1.85)) 0 ;
-//top
+    move -r 0 (($newScale * 0.6) + ($newScale * 1.85)) 0 ;
+    //top
     //array $topSphere[] records the position of the top-most sphere for ref
     string $topSphere[] = `polySphere -r ($newScale * 0.3) -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1`;
     //float records the Y position to move to and stores it as a variable
     float $topSphereY = (($newScale * 0.3) + (($newScale * 0.6) * 1.85) + ($newScale * 1.85));
-move -r 0 $topSphereY 0;
+    move -r 0 $topSphereY 0;
 
-//TOP SPHERE POSITION STORED: 0 = x, 1 = y, 2 = z
-float $position[] = `xform -q -ws -t $topSphere[0]`;
+    //TOP SPHERE POSITION STORED: 0 = x, 1 = y, 2 = z
+    float $position[] = `xform -q -ws -t $topSphere[0]`;
 
-//hat brim
-polyCylinder -r ($newScale * 0.35) -h ($newScale * 0.05) -sx 20 -sy 1 -sz 1 -ax 0 1 0 -cuv 3 -ch 1;
-//place on topmost sphere
-move -absolute $position[0] ($position[1] + ($newScale * 0.3)) $position[2];
-//hat top
-polyCylinder -r ($newScale * 0.2) -h ($newScale * 0.5) -sx 20 -sy 1 -sz 1 -ax 0 1 0 -cuv 3 -ch 1;
-//offset on topmost sphere
-move -absolute $position[0] ($position[1] + ($newScale * 0.55)) $position[2];
+    //hat brim
+    polyCylinder -r ($newScale * 0.35) -h ($newScale * 0.05) -sx 20 -sy 1 -sz 1 -ax 0 1 0 -cuv 3 -ch 1;
+    //place on topmost sphere
+    move -absolute $position[0] ($position[1] + ($newScale * 0.3)) $position[2];
+    //hat top
+    polyCylinder -r ($newScale * 0.2) -h ($newScale * 0.5) -sx 20 -sy 1 -sz 1 -ax 0 1 0 -cuv 3 -ch 1;
+    //offset on topmost sphere
+    move -absolute $position[0] ($position[1] + ($newScale * 0.55)) $position[2];
 
-//carrot nose
-polyCone -r ($newScale / $newScale) -h ($newScale * 2) -sx 20 -sy 1 -sz 0 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1;
-move -absolute $position[0] $position[1] ($position[2] + ($newScale * 0.3));
-rotate -r -os -fo 90 0 0 ;
-scale -r ($newScale * 0.1) ($newScale * 0.1) ($newScale * 0.1) ;
+    //carrot nose
+    polyCone -r ($newScale / $newScale) -h ($newScale * 2) -sx 20 -sy 1 -sz 0 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1;
+    move -absolute $position[0] $position[1] ($position[2] + ($newScale * 0.3));
+    rotate -r -os -fo 90 0 0 ;
+    scale -r ($newScale * 0.1) ($newScale * 0.1) ($newScale * 0.1) ;
 }
 snowManCreate(3);
