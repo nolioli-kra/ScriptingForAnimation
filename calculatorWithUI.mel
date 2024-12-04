@@ -1,0 +1,159 @@
+//!!calculator creation call is at the end of the script!!
+
+global proc calculationFunc(){
+    float $num1 = `textFieldGrp -q -text input1`;
+    float $num2 = `textFieldGrp -q -text input2`;
+    string $operation = `optionMenuGrp -q -value operationMenu`;
+
+    float $nums[] = {$num1, $num2};
+    float $result;
+
+    switch ($operation) {
+        case "Addition":
+            $result = `additionFunc $nums`;
+            break;
+        case "Subtraction":
+            $result = `subtractionFunc $nums`;
+            break;
+        case "Multiplication":
+            $result = `multiplyFunc $nums`;
+            break;
+        case "Division":
+            $result = `divideFunc $nums`;
+            break;
+        case "Exponent":
+            $result = `exponentFunc $nums`;
+            break;
+        case "Average":
+            $result = `averageFunc $nums`;
+            break;
+        case "Median":
+            $result = `medianFunc $nums`;
+            break;
+        default:
+            error "Invalid operation. Please specify add, subtract, multiply, divide, exponent, average, or median.";
+    }
+
+    textField -e -text $result resultField;
+}
+
+global proc CreateCalculator(){
+    string $calcWindow = "calcWindow";
+    if (`window -exists $calcWindow`){
+        deleteUI $calcWindow;
+    }
+    
+    $calcWindow = `window -title "Calculator"
+                          -widthHeight 300 400`;
+        columnLayout;
+        textFieldGrp -label "Input 1" 
+                     -text "0" 
+                     -editable true 
+                     input1;
+        textFieldGrp -label "Input 2" 
+                     -text "0" 
+                     -editable true 
+                     input2;
+        optionMenuGrp -label "Operation" 
+                      "operationMenu";
+            menuItem -label "Addition";
+            menuItem -label "Subtraction";
+            menuItem -label "Multiplication";
+            menuItem -label "Division";
+            menuItem -label "Exponent";
+            menuItem -label "Average";
+            menuItem -label "Median";
+        button -label "=" -command calculationFunc;
+        text -label "Result: ";
+        textField -ed 0
+                  resultField;
+        showWindow $calcWindow;
+}
+
+//ADDITION
+global proc float additionFunc(float $numbers[]){
+    float $sum = 0.0;
+    int $i;
+    for ($i = 0; $i < size($numbers); $i++){
+        $sum += $numbers[$i];
+    }
+    return $sum;
+}
+
+//SUBTRACTION
+global proc float subtractionFunc(float $numbers[]){
+    float $diff = $numbers[0];
+    int $i;
+    //   initialize on the second iteration to prevent 
+    //   the first iteration subtracting iteslf
+    //        |
+    //        V
+    for ($i = 1; $i < size($numbers); $i++){
+        $diff -= $numbers[$i];
+    }
+    return $diff;
+}
+
+//MULTIPLICATION
+global proc float multiplyFunc(float $numbers[]){
+    float $mTotal = 1.0;
+    int $i;
+    for ($i = 0; $i < size($numbers); $i++){
+        $mTotal *= $numbers[$i];
+    }
+    return $mTotal;
+}
+
+//DIVISION
+global proc float divideFunc(float $numbers[]){
+    float $dTotal = $numbers[0];
+    int $i;
+    //   initialize on the second iteration to prevent 
+    //   the first iteration dividing by iteslfd
+    //        |
+    //        V
+    for ($i = 1; $i < size($numbers); $i++){
+        $dTotal /= $numbers[$i];
+    }
+    return $dTotal;
+}
+
+//EXPONENT
+global proc float exponentFunc(float $numbers[]){
+    float $base = $numbers[0];
+    float $powerN = $numbers[1];
+    float $exTotal = `pow $base $powerN`;
+    return $exTotal;
+}
+
+//MEAN
+global proc float averageFunc(float $numbers[]){
+    float $meanSum = 0.0;
+    int $sourceSize = size($numbers);
+    int $i;
+    for ($i = 0; $i < size($numbers); $i++){
+        $meanSum += $numbers[$i];
+    }
+    float $mean = ($meanSum / $sourceSize);
+    return $mean;
+}
+
+// MEDIAN
+global proc float medianFunc(float $numbers[]) {
+    int $size = size($numbers);
+
+    float $sorted[] = sort($numbers);
+
+    // the % finds the remainder of the size, if there is a 1 left over then the size is odd
+    // and no additional calc is required
+    if ($size % 2 == 1) {
+        //              int converts the decimal result to the middle value
+        return $sorted[(int)($size / 2)];
+    } else {
+        //even number of elements: average the two middle elements
+        int $midIndex = $size / 2;
+        return ($sorted[$midIndex - 1] + $sorted[$midIndex]) / 2;
+    }
+}
+
+CreateCalculator();
