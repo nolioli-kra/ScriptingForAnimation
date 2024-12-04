@@ -1,0 +1,90 @@
+global proc dupeSelected() {
+    string $selectedObjects[] = `ls -sl`;
+    if (size($selectedObjects) == 0) {
+        warning("no objects selected");
+        return;
+    }
+    
+    int $numDuplicates = `intSlider -q -value "intSliderOne"`;
+    
+    //FLOAT GRID VALUES
+    float $maxRangeX = `floatField -q -value "maxXField"`;
+    float $maxRangeY = `floatField -q -value "maxYField"`;
+    float $maxRangeZ = `floatField -q -value "maxZField"`;
+
+    float $minRangeX = `floatField -q -value "minXField"`;
+    float $minRangeY = `floatField -q -value "minYField"`;
+    float $minRangeZ = `floatField -q -value "minZField"`;
+
+    for ($obj in $selectedObjects) {
+        for ($i = 0; $i < $numDuplicates; $i++) {
+            float $randomX = rand($minRangeX, $maxRangeX);
+            float $randomY = rand($minRangeY, $maxRangeY);
+            float $randomZ = rand($minRangeZ, $maxRangeZ);
+            
+            string $dup[] = `duplicate $obj`;
+            
+            move $randomX $randomY $randomZ $dup[0];
+        }
+    }
+}
+
+global proc changeSliderLabel(){
+    int $sliderValue = `intSlider -q -value "intSliderOne"`;
+    intField -e -value $sliderValue "intTwo";
+}
+
+string $dupeWindow = "dupe_select_ui";
+if (`window -ex $dupeWindow`){
+    deleteUI $dupeWindow;
+}
+
+$dupeWindow = `window -title "Duplicate & Scatter Selection"
+                      -iconName "Dupe + Scatter"
+                      -widthHeight 200 300
+                      $dupeWindow`;
+    string $mColumn = `columnLayout -adjustableColumn 1 -p $dupeWindow`;
+        
+        text -label "Number of Duplicates" 
+             -align "left" 
+             -height 50 
+             -font "boldLabelFont"
+             -p $mColumn;
+        //INT FOR DUPE AMOUNT
+        intField -ed 0 -p $mColumn "intTwo";
+        intSlider -ann "select how many duplicates you want to create"
+                  -minValue 1
+                  -maxValue 15
+                  -p $mColumn
+                  -dragCommand "changeSliderLabel()"
+                  "intSliderOne";
+        text -label "Random Placement Range" 
+             -align "left" 
+             -height 50 
+             -font "boldLabelFont"
+             -p $mColumn;
+        string $rangeColumn = `columnLayout -adjustableColumn true -p $mColumn`;
+
+            text -label "Max Range" -align "left" -p $rangeColumn;
+            string $gridMax = `gridLayout -numberOfColumns 3 
+                                          -cellWidthHeight 150 30 
+                                          -p $rangeColumn`;
+                string $minFloatFields[];
+                $minFloatFields[0] = `floatField -ann "Max X" -p $gridMax "maxXField"`;
+                $minFloatFields[1] = `floatField -ann "Max Y" -p $gridMax "maxYField"`;
+                $minFloatFields[2] = `floatField -ann "Max Z" -p $gridMax "maxZField"`;
+            
+            text -label "Min Range" -align "left" -p $rangeColumn;
+            string $gridMin = `gridLayout -numberOfColumns 3 
+                                          -cellWidthHeight 150 30 
+                                          -p $rangeColumn`;
+                string $maxFloatFields[];
+                $maxFloatFields[0] = `floatField -ann "Min X" -p $gridMin "minXField"`;
+                $maxFloatFields[1] = `floatField -ann "Min Y" -p $gridMin "minYField"`;
+                $maxFloatFields[2] = `floatField -ann "Min Z" -p $gridMin "minZField"`;
+
+            button -label "Duplicate and Scatter" 
+                   -p $mColumn
+                   -command "dupeSelected()";
+            
+showWindow $dupeWindow;

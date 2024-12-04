@@ -1,0 +1,49 @@
+
+global proc Add(){
+    string $num1 = `optionVar -q "firstField"`;
+    string $num2 = `optionVar -q "secondField"`;
+    string $num3 = `optionVar -q "thirdField"`;
+    string $text1 = `optionVar -q "fourthField"`;
+
+    string $fieldVal1 = `floatField -q -value $num1`;
+    string $fieldVal2 = `floatField -q -value $num2`;
+
+    float $sum1 = $fieldVal1 + $fieldVal2;
+    print ($sum1 + "\n");
+    floatField -e -value $sum1 $num3;
+    textField -e -text ("The sum of " + $fieldVal1 + " and " + $fieldVal2 + " is " + $sum1 + ".") $text1;
+}
+
+global proc WhatsInFloatField(){
+    string $value1 = `optionVar -q "firstField"`;
+    //print ($value1 + "\n");
+
+    print (`floatField -q -value $value1` + "\n");
+}
+
+string $windowOne = "zombie_ui";
+if (`window -ex $windowOne`){
+    deleteUI $windowOne;
+}
+
+
+
+$windowOne = `window -height 300
+                     -title "Braaaains"
+                     -sizeable 1
+                     -width 400
+                     $windowOne`;
+string $mColumn = `columnLayout -adjustableColumn 1 -parent $windowOne`;
+button -p $mColumn -label "Evil Zombie Attack" -command "print (\"RAAAAGHHHH!!!\")";
+button -p $mColumn -label "Retrieve Float Value" -command WhatsInFloatField;
+button -p $mColumn -label "Add Floats" -command Add;
+
+string $firstFloatField = `floatField`;
+optionVar -sv "firstField" $firstFloatField;
+optionVar -sv "secondField" `floatField`;
+optionVar -sv "thirdField" `floatField -ed 0`;
+optionVar -sv "fourthField" `textField -ed 0`;
+
+showWindow $windowOne;
+
+
